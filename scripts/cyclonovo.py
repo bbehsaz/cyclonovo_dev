@@ -188,12 +188,15 @@ if __name__ == "__main__":
         e = float(params["fragment_ion_thresh"])
         num_cyclopeptide_spectra_dic[(alpha, beta)] = 0
         kValues = [int(args.kmerSize)]
+        kmerSize = int(params['kmerSize'])
+        kmerThreshold= int(params['kmerThreshold']) 
+
         kthresholdValues = [int(args.kmerThreshold)]
         allidsconsidered = []
         allsequenced = 0
         representative = 'median'
         oneCyclopepFound = False
-
+        reconstructions_file = {}
         ### starting the analysis one spectrum at a time
         split_input_spectra = peaksfile.split("END IONS")
         thisbuildingblock = building_blocks_main.copy()
@@ -222,7 +225,7 @@ if __name__ == "__main__":
             else:
                 continue
             final_compound = info[4]
-
+            reconstructions_file = {}
             if final_compound == "cyclopeptide":
                 with open(outputprefix + "classification_scores.tsv", "a") as compound_type_reports_file:
                     compound_type_reports_file.write("\t".join(str(z) for z in info) + "\n")
@@ -234,11 +237,7 @@ if __name__ == "__main__":
                     if not args.denovo:
                         continue
                     benchmark_file = {}
-                    reconstructions_file = {}
-                    # for kmerSize in kValues:
-                    #     for kmerThreshold in kthresholdValues:
-                    kmerSize = int(params['kmerSize'])    
-                    kmerThreshold= int(params['kmerThreshold'])   
+  
                     benchmark_file[(kmerSize, kmerThreshold)] = open(
                     outputprefix + "sequencing_k" + str(kmerSize) + "_t" + str(kmerThreshold) + "_summary.txt", "a")
                     reconstructions_file[(kmerSize, kmerThreshold)] = open(
@@ -258,12 +257,14 @@ if __name__ == "__main__":
                     candidateSequences = denovo_sequence(kmerSize, selected_kmer, realPepMass, building_blocks, e,e,kmerThreshold,verboseprint,prefixKmer_freqs)
                     output_denovo_results(candidateSequences, info[1], info[2], info[3],benchmark_file[(kmerSize, kmerThreshold)], 
                         kmerSize,kmerThreshold,reconstructions_file[(kmerSize, kmerThreshold)])
-
-        nameofrecontfile = reconstructions_file[(kmerSize, kmerThreshold)].name
-        nameofsummaryfile = benchmark_file[(kmerSize, kmerThreshold)].name
+        if len(reconstructions_file)>0:
+            nameofrecontfile = reconstructions_file[(kmerSize, kmerThreshold)].name
+            nameofsummaryfile = benchmark_file[(kmerSize, kmerThreshold)].name
+            reconstructions_file[(kmerSize, kmerThreshold)].close()
         # nameofcyclospecfile = output+"/cyclospectra.mgf"
+
         nameofcyclospecfile = cyclopeptide_spectra_file.name
-        reconstructions_file[(kValues[0], kthresholdValues[0])].close()
+        
         verboseprint("calculating P-values and cleaning up ...")
         if args.denovo:
             Popen(["sh " + cyclonovoPath + '/scripts/generate_pvalus_recontfile_mgf.sh ' + nameofrecontfile +
