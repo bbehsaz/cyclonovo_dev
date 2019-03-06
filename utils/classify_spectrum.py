@@ -23,7 +23,7 @@ def classifySpectrum(
     standardAutconvCleaned = []
     precursorMass = pepMasses[peptide]
     # num_raw_spectra += 1
-    realPepMass = pepMasses[peptide] * charges[peptide] - protonMass
+    realPepMass = pepMasses[peptide] * charges[peptide] - charges[peptide]*protonMass
     betta_values = [float(params["beta"])]
     alpha_values = [float(params["alpha"])]
     e = float(params['fragment_ion_thresh'])

@@ -1,0 +1,2 @@
+SpectrumFile	SpecMass	RT	Charge	Cyclopeptide?	Cyclointensity	KmerScore	AKmerWMAXScore	CyclopeptidicClusters
+data/surugamide_spectrum.mgf	912.623	870.593	1	cyclopeptide	0.93602451031	11	128.095-113.084-147.068-113.084-128.095	(113.08,12),(128.09,7),(186.08,6),(71.04,5),(156.1,4),(147.07,4),(101.05,3)
