@@ -155,7 +155,7 @@ def denovo_sequence(kmerSize, kmers, realPepMass, building_blocks, e, delta, kme
         adjacencies, nodes, edges = pruneGraph(adjacencies, nodes, edges)
         listAllPaths = []
         for node in nodes:
-            if (realPepMass + protonMass) - sum(nodes[node][1]) > -e:
+            if (realPepMass ) - sum([a* nodes[node][1][a] for a in nodes[node][1]] ) > -e > -e:
                 listAllPaths.extend(findWalksLengthK(composition, adjacencies, node, l, nodes, building_blocks))
         allPaths = set(listAllPaths)
         if len(allPaths) < 1:
